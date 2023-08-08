@@ -1,43 +1,27 @@
 import { Request, Response } from "express";
-import { getPost, getAllPostsService } from "../services/post";
+import {
+  getPostService,
+  getAllPostsService,
+  createPostService,
+} from "../services/post";
+import { handleHttp } from "../utils/error.handle";
 
 const getPosts = async (req: Request, res: Response) => {
   try {
-    const { page = 1, perPage = 3 } = req.query;
-    const currentPage = parseInt(page as string);
-    const postsPerPage = parseInt(perPage as string);
+    const { currentPage, postsPerPage } = req.query;
+    const response = await getPostService(
+      Number(currentPage),
+      Number(postsPerPage)
+    );
 
-    // Obtener las publicaciones usando el servicio
-    const result = await getPost(currentPage, postsPerPage);
-
-    // Comprueba si hay publicaciones en el resultado
-    if (result.posts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No se encontraron publicaciones." });
-    }
-
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ message: "Error al obtener las publicaciones." });
+    res.json({ response });
+  } catch (e) {
+    console.error(e);
+    handleHttp(res, "Error al obtener publicaciones");
   }
 };
+const getAllPosts = async (req: Request, res: Response) => {};
 
-const getAllPosts = async (req: Request, res: Response) => {
-  try {
-    const posts = await getAllPostsService();
+const createPost = async (req: Request, res: Response) => {};
 
-    if (posts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No se encontraron publicaciones." });
-    }
-
-    res.json(posts);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error al obtener las publicaciones." });
-  }
-};
-
-export { getPosts, getAllPosts };
+export { getPosts, getAllPosts, createPost };
