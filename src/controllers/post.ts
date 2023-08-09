@@ -14,20 +14,24 @@ import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
 const fs = require("fs");
 
-const getPosts = async (req: Request, res: Response) => {
+const getPostsCtrl = async (req: Request, res: Response) => {
   try {
-    const { currentPage, postsPerPage } = req.query;
-    const response = await getPostService(
-      Number(currentPage),
-      Number(postsPerPage)
+    const { page = 1, perPage = 3 } = req.query;
+    const currentPage = parseInt(page as string);
+    const postsPerPage = parseInt(perPage as string);
+
+    const { posts, totalPages } = await getPostService(
+      currentPage,
+      postsPerPage
     );
 
-    res.json({ response });
+    res.json({ posts, totalPages });
   } catch (e) {
     console.error(e);
     handleHttp(res, "Error al obtener publicaciones");
   }
 };
+
 const getAllPosts = async (req: Request, res: Response) => {
   try {
     const response = await getAllPostsService();
@@ -164,7 +168,7 @@ const getPostsTagsCtrl = async (req: Request, res: Response) => {
 };
 
 export {
-  getPosts,
+  getPostsCtrl,
   getAllPosts,
   createPost,
   getSinglePostCtrl,

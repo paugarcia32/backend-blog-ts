@@ -9,12 +9,15 @@ import PostModel from "../models/Post";
 import { IComment } from "../interfaces/comment.interface";
 const fs = require("fs");
 
-const getPostService = async (currentPage: number, postsPerPage: number) => {
+const getPostService = async (
+  currentPage: number,
+  postsPerPage: number
+): Promise<{ posts: IPost[]; totalPages: number }> => {
   try {
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
 
-    const responseItem = await Post.find({})
+    const posts = await Post.find({})
       .populate("author", ["username"])
       .populate("tag", ["title"])
       .sort({ createdAt: -1 })
@@ -24,7 +27,7 @@ const getPostService = async (currentPage: number, postsPerPage: number) => {
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / postsPerPage);
 
-    return { responseItem, totalPages };
+    return { posts, totalPages }; // Devolver la respuesta en un objeto con las propiedades 'posts' y 'totalPages'
   } catch (error) {
     console.error(error);
     throw new Error("Error al obtener las publicaciones.");
@@ -36,7 +39,7 @@ const getAllPostsService = async () => {
     .populate("author", ["username"])
     .populate("tag", ["title"])
     .sort({ createdAt: -1 });
-  return { posts };
+  return posts; // Devolver directamente el array de posts
 };
 
 interface CreatePostParams {

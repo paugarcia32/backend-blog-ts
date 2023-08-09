@@ -9,7 +9,7 @@ import { router as tagRouter } from "./routes/tag";
 const PORT = process.env.PORT || 3001;
 const app = express();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: process.env.URL }));
 app.use(express.json());
 
 // Registra los modelos antes de usar los routers

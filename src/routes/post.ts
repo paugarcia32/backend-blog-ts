@@ -1,6 +1,6 @@
 import { Router } from "express";
 import {
-  getPosts,
+  getPostsCtrl,
   getAllPosts,
   createPost,
   getSinglePostCtrl,
@@ -16,7 +16,7 @@ const uploadMiddleware = multer({ dest: "uploads/" });
 
 const router = Router();
 
-router.get("/post", getPosts);
+router.get("/post", getPostsCtrl);
 
 router.get("/post/all", getAllPosts);
 
