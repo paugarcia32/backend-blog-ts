@@ -7,6 +7,8 @@ import {
   updatePostCtrl,
   createCommentCtrl,
   getCommentCtrl,
+  getRelatedPostsCtrl,
+  getPostsTagsCtrl,
 } from "../controllers/post";
 
 const multer = require("multer");
@@ -27,5 +29,9 @@ router.put("/post/:id", uploadMiddleware.single("file"), updatePostCtrl);
 router.post("/post/:id/comment", createCommentCtrl);
 
 router.get("/post/:id/comments", getCommentCtrl);
+
+router.get("/post/:id/related", getRelatedPostsCtrl);
+
+router.get("/posts/:tagId", getPostsTagsCtrl);
 
 export { router };

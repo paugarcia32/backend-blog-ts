@@ -4,6 +4,7 @@ import db from "./config/mongo";
 import "dotenv/config";
 import { router as userRouter } from "./routes/user";
 import { router as postRouter } from "./routes/post";
+import { router as tagRouter } from "./routes/tag";
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -18,6 +19,7 @@ import "./models/Tag"; // Asegúrate de que la ruta sea correcta
 
 app.use("/", userRouter);
 app.use("/", postRouter);
+app.use("/", tagRouter);
 
 db().then(() => {
   console.log("Connection is ready...");

@@ -177,6 +177,40 @@ const getCommentService = async (postId: string) => {
   return comments;
 };
 
+const getRelatedPostsService = async (postId: string) => {
+  const post = await PostModel.findById(postId).populate("tag");
+
+  if (!post) {
+    throw new Error("El post no existe.");
+  }
+
+  const postTags = post.tag.map((tag) => tag._id);
+
+  const relatedPosts = await PostModel.find({
+    _id: { $ne: postId },
+    tag: { $in: postTags },
+  })
+    .populate("author", ["username"])
+    .populate("tag", ["title"])
+    .limit(5)
+    .sort({ createdAt: -1 });
+
+  return relatedPosts as IPost[];
+};
+
+const getPostsTagsService = async (tagId: string) => {
+  const posts = await PostModel.find({ tag: tagId })
+    .populate("author", ["username"])
+    .sort({ createdAt: -1 })
+    .limit(20);
+
+  if (posts.length === 0) {
+    throw new Error("No se encontraron publicaciones con este tag.");
+  }
+
+  return posts as IPost[];
+};
+
 export {
   getPostService,
   getAllPostsService,
@@ -185,4 +219,6 @@ export {
   updatePostService,
   createCommentService,
   getCommentService,
+  getRelatedPostsService,
+  getPostsTagsService,
 };

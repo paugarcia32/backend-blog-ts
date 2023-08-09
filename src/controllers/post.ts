@@ -7,6 +7,8 @@ import {
   updatePostService,
   createCommentService,
   getCommentService,
+  getRelatedPostsService,
+  getPostsTagsService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -140,6 +142,27 @@ const getCommentCtrl = async (req: Request, res: Response) => {
   }
 };
 
+const getRelatedPostsCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const relatedPosts = await getRelatedPostsService(postId);
+    res.json(relatedPosts);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los posts relacionados." });
+  }
+};
+
+const getPostsTagsCtrl = async (req: Request, res: Response) => {
+  try {
+    const { tagId } = req.params;
+
+    const posts = await getPostsTagsService(tagId);
+    res.json(posts);
+  } catch (error) {
+    res.status(500).json({ message: "Error al obtener las publicaciones." });
+  }
+};
+
 export {
   getPosts,
   getAllPosts,
@@ -148,4 +171,6 @@ export {
   updatePostCtrl,
   createCommentCtrl,
   getCommentCtrl,
+  getRelatedPostsCtrl,
+  getPostsTagsCtrl,
 };
