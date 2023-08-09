@@ -78,4 +78,17 @@ const createPostService = async ({
   return postDoc;
 };
 
-export { getPostService, getAllPostsService, createPostService };
+const getSinglePostService = async (id: string): Promise<IPost | null> => {
+  const postDoc = await Post.findById(id)
+    .populate("author", ["username"])
+    .populate("tag", ["title"]);
+
+  return postDoc;
+};
+
+export {
+  getPostService,
+  getAllPostsService,
+  createPostService,
+  getSinglePostService,
+};

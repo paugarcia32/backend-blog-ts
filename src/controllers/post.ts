@@ -3,6 +3,7 @@ import {
   getPostService,
   getAllPostsService,
   createPostService,
+  getSinglePostService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -69,4 +70,14 @@ const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export { getPosts, getAllPosts, createPost };
+const getSinglePostCtrl = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const response = await getSinglePostService(id); // ¡Asegúrate de agregar await aquí!
+    res.json(response);
+  } catch (error) {
+    handleHttp(res, "ERROR_UPDATE_CHALLENGE");
+  }
+};
+
+export { getPosts, getAllPosts, createPost, getSinglePostCtrl };
