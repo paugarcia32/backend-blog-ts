@@ -4,6 +4,9 @@ import { ITag } from "../interfaces/tag.interface";
 import { IUser } from "../interfaces/user.interface";
 import { IPost } from "../interfaces/post.interface";
 import Tag from "../models/Tag";
+import CommentModel from "../models/Comment";
+import PostModel from "../models/Post";
+import { IComment } from "../interfaces/comment.interface";
 const fs = require("fs");
 
 const getPostService = async (currentPage: number, postsPerPage: number) => {
@@ -86,9 +89,100 @@ const getSinglePostService = async (id: string): Promise<IPost | null> => {
   return postDoc;
 };
 
+interface UpdatePostParams {
+  postId: string;
+  title: string;
+  summary: string;
+  content: string;
+  authorId: string;
+  file?: Express.Multer.File;
+}
+
+const updatePostService = async ({
+  postId,
+  title,
+  summary,
+  content,
+  authorId,
+  file,
+}: UpdatePostParams): Promise<IPost | null> => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    throw new Error("El post no existe.");
+  }
+
+  if (post.author.toString() !== authorId) {
+    throw new Error("No tienes permiso para editar este post.");
+  }
+
+  post.title = title;
+  post.summary = summary;
+  post.content = content;
+
+  if (file) {
+    const { originalname, path } = file;
+    const parts = originalname.split(".");
+    const ext = parts[parts.length - 1];
+    const newPath = path + "." + ext;
+    fs.renameSync(path, newPath);
+    post.cover = newPath;
+  }
+
+  const updatedPost = await post.save();
+  return updatedPost;
+};
+
+const createCommentService = async ({
+  postId,
+  autor,
+  contenido,
+}: {
+  postId: string;
+  autor: string;
+  contenido: string;
+}): Promise<IComment> => {
+  const newComment = new CommentModel({
+    autor,
+    contenido,
+    fecha_comentario: new Date().toISOString(),
+    likes: 0,
+  });
+
+  const post = await PostModel.findById(postId);
+  if (!post) {
+    throw new Error("El post no existe.");
+  }
+
+  // Agregar el nuevo comentario al post y guardar el post actualizado
+  post.comments.push(newComment);
+  await post.save();
+
+  // Guardar el comentario en la colección de comentarios
+  await newComment.save();
+
+  return newComment;
+};
+
+const getCommentService = async (postId: string) => {
+  const postWithComments = await PostModel.findById(postId)
+    .populate("comments")
+    .exec();
+
+  if (!postWithComments) {
+    throw new Error("El post no existe.");
+  }
+
+  const comments = postWithComments.comments as IComment[];
+  return comments;
+};
+
 export {
   getPostService,
   getAllPostsService,
   createPostService,
   getSinglePostService,
+  updatePostService,
+  createCommentService,
+  getCommentService,
 };

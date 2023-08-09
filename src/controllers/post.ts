@@ -4,6 +4,9 @@ import {
   getAllPostsService,
   createPostService,
   getSinglePostService,
+  updatePostService,
+  createCommentService,
+  getCommentService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -80,4 +83,69 @@ const getSinglePostCtrl = async (req: Request, res: Response) => {
   }
 };
 
-export { getPosts, getAllPosts, createPost, getSinglePostCtrl };
+const updatePostCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { title, summary, content } = req.body;
+
+    // Verificar si el usuario está autenticado
+    verifyToken(req, res, async () => {
+      // Marca esta función como async
+      const decodedToken = req.user; // Aquí ya tienes el usuario decodificado
+      if (!decodedToken) {
+        return res.status(401).json({ error: "Token inválido" });
+      }
+
+      // Actualizar el post utilizando el servicio
+      const updatedPost = await updatePostService({
+        postId,
+        title,
+        summary,
+        content,
+        authorId: decodedToken.id,
+        file: req.file,
+      });
+
+      res.json(updatedPost);
+    });
+  } catch (error) {
+    handleHttp(res, "Error al actualizar el post");
+  }
+};
+
+const createCommentCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { autor, contenido } = req.body;
+
+    const newComment = await createCommentService({
+      postId,
+      autor,
+      contenido,
+    });
+
+    res.json(newComment);
+  } catch (error) {
+    handleHttp(res, "Error al crear el comentario");
+  }
+};
+
+const getCommentCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const comments = await getCommentService(postId);
+    res.json(comments);
+  } catch (error) {
+    handleHttp(res, "Error al obtener los comentarios.");
+  }
+};
+
+export {
+  getPosts,
+  getAllPosts,
+  createPost,
+  getSinglePostCtrl,
+  updatePostCtrl,
+  createCommentCtrl,
+  getCommentCtrl,
+};
