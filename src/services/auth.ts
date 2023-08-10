@@ -40,4 +40,16 @@ const loginUser = async ({ username, password }: IUser) => {
   }
 };
 
-export { registerNewUser, loginUser };
+const getProfileInfo = async (userId: string): Promise<IUser | null> => {
+  try {
+    // Aquí deberías implementar la lógica para obtener el perfil del usuario
+    const user = await UserModel.findById(userId);
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al obtener el perfil del usuario.");
+  }
+};
+
+export { registerNewUser, loginUser, getProfileInfo };

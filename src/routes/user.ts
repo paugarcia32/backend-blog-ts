@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   loginCtrl,
   logoutCtrl,
-  profileCtrl,
+  getProfileCtrl,
   registerCtrl,
 } from "../controllers/user";
 import { verifyToken } from "../utils/jwt.handle";
@@ -13,7 +13,7 @@ router.post("/register", registerCtrl);
 
 router.post("/login", loginCtrl);
 
-router.get("/profile", verifyToken, profileCtrl);
+router.get("/profile", getProfileCtrl);
 
 router.post("/", logoutCtrl);
 
