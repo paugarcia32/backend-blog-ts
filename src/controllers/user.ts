@@ -1,16 +1,14 @@
-import { Request, Response, response } from "express";
+import { Request, Response } from "express";
 import { handleHttp } from "../utils/error.handle";
-import { loginUser, registerNewUser, getProfileInfo } from "../services/auth";
-import { IUser } from "../interfaces/user.interface"; // Asegúrate de importar la interfaz IUser aquí
+import { loginUser, registerNewUser } from "../services/auth";
+import { IUser } from "../interfaces/user.interface";
 import { generateToken, verifyToken } from "../utils/jwt.handle";
-import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const secret = process.env.SECRET_KEY || "wzesxvbhjbascdsfsdfgs";
-const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
 
 const registerCtrl = async ({ body }: Request, res: Response) => {
   try {

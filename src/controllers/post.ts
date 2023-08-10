@@ -67,7 +67,7 @@ const createPost = async (req: Request, res: Response) => {
         summary,
         content,
         cover: newPath,
-        authorId: req.user?.id || "", // Usar el ID del usuario del token
+        authorId: req.user?.id || "",
         tags: tagsArray,
       });
 

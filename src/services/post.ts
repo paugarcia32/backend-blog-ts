@@ -27,7 +27,7 @@ const getPostService = async (
     const totalPosts = await Post.countDocuments();
     const totalPages = Math.ceil(totalPosts / postsPerPage);
 
-    return { posts, totalPages }; // Devolver la respuesta en un objeto con las propiedades 'posts' y 'totalPages'
+    return { posts, totalPages };
   } catch (error) {
     console.error(error);
     throw new Error("Error al obtener las publicaciones.");
@@ -39,7 +39,7 @@ const getAllPostsService = async () => {
     .populate("author", ["username"])
     .populate("tag", ["title"])
     .sort({ createdAt: -1 });
-  return posts; // Devolver directamente el array de posts
+  return posts;
 };
 
 interface CreatePostParams {
@@ -157,11 +157,9 @@ const createCommentService = async ({
     throw new Error("El post no existe.");
   }
 
-  // Agregar el nuevo comentario al post y guardar el post actualizado
   post.comments.push(newComment);
   await post.save();
 
-  // Guardar el comentario en la colección de comentarios
   await newComment.save();
 
   return newComment;

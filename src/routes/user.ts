@@ -5,7 +5,6 @@ import {
   getProfileCtrl,
   registerCtrl,
 } from "../controllers/user";
-import { verifyToken } from "../utils/jwt.handle";
 
 const router = Router();
 

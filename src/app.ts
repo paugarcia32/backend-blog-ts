@@ -12,12 +12,11 @@ const app = express();
 app.use(cors({ credentials: true, origin: process.env.URL }));
 app.use(express.json());
 app.use(cookieParser());
-app.use("/src/uploads", express.static(__dirname + "/src/uploads"));
+app.use("/src/uploads", express.static(__dirname + "/uploads"));
 
-// Registra los modelos antes de usar los routers
-import "./models/User"; // Asegúrate de que la ruta sea correcta
-import "./models/Post"; // Asegúrate de que la ruta sea correcta
-import "./models/Tag"; // Asegúrate de que la ruta sea correcta
+import "./models/User";
+import "./models/Post";
+import "./models/Tag";
 
 app.use("/", userRouter);
 app.use("/", postRouter);
