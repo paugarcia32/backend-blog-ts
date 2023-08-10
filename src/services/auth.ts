@@ -32,7 +32,6 @@ const loginUser = async ({ username, password }: IUser) => {
       return {
         id: checkIs._id,
         username,
-        token,
       };
     }
   } catch (error) {

@@ -2,7 +2,7 @@ import { Request, Response, response } from "express";
 import { handleHttp } from "../utils/error.handle";
 import { loginUser, registerNewUser, getProfileInfo } from "../services/auth";
 import { IUser } from "../interfaces/user.interface"; // Asegúrate de importar la interfaz IUser aquí
-import { verifyToken } from "../utils/jwt.handle";
+import { generateToken, verifyToken } from "../utils/jwt.handle";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 const express = require("express");
 const app = express();
@@ -32,22 +32,24 @@ const loginCtrl = async (req: Request, res: Response) => {
   try {
     const responseUser = await loginUser({ username, password } as IUser);
 
-    if (typeof responseUser === "object" && responseUser.token) {
-      // Si responseUser es un objeto válido con la propiedad 'token', se asume que el inicio de sesión fue exitoso
-      res.status(200).json(responseUser);
+    if (typeof responseUser === "object") {
+      if (responseUser.id && responseUser.username) {
+        // Login exitoso, agregar el token a la respuesta
+        const token = generateToken(responseUser);
+        // res.status(200).json({ ...responseUser, token });
+        res.cookie("token", token).json({ responseUser });
+      } else {
+        // Error de inicio de sesión
+        res.status(400).send(responseUser);
+      }
     } else {
-      // Si responseUser no es un objeto válido con 'token', se trata de un error de inicio de sesión
+      // Error de inicio de sesión
       res.status(400).send(responseUser);
     }
   } catch (error) {
     handleHttp(res, "ERROR_LOGIN");
   }
 };
-
-interface DecodedToken {
-  username: string;
-  id: string;
-}
 
 const getProfileCtrl = (req: Request, res: Response) => {
   const { token } = req.cookies;
@@ -71,7 +73,13 @@ const getProfileCtrl = (req: Request, res: Response) => {
 };
 
 const logoutCtrl = (req: Request, res: Response) => {
-  res.clearCookie("token").json("ok");
+  try {
+    // Eliminar la cookie que contiene el token
+    res.clearCookie("token").json("ok");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al cerrar sesión" });
+  }
 };
 
 export { registerCtrl, loginCtrl, getProfileCtrl, logoutCtrl };

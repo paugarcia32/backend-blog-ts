@@ -15,6 +15,6 @@ router.post("/login", loginCtrl);
 
 router.get("/profile", getProfileCtrl);
 
-router.post("/", logoutCtrl);
+router.post("/logout", logoutCtrl);
 
 export { router };
