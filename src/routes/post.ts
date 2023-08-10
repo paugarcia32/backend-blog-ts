@@ -12,7 +12,7 @@ import {
 } from "../controllers/post";
 
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
+const uploadMiddleware = multer({ dest: "src/uploads/" });
 
 const router = Router();
 
