@@ -12,8 +12,9 @@ import {
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
-const fs = require("fs");
-
+import fs from "fs";
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploads/" });
 const getPostsCtrl = async (req: Request, res: Response) => {
   try {
     const { page = 1, perPage = 3 } = req.query;

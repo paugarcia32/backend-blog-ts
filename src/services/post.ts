@@ -8,6 +8,8 @@ import CommentModel from "../models/Comment";
 import PostModel from "../models/Post";
 import { IComment } from "../interfaces/comment.interface";
 const fs = require("fs");
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploads/" });
 
 const getPostService = async (
   currentPage: number,

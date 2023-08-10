@@ -9,6 +9,8 @@ const app = express();
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 const secret = process.env.SECRET_KEY || "wzesxvbhjbascdsfsdfgs";
+const multer = require("multer");
+const uploadMiddleware = multer({ dest: "uploads/" });
 
 const registerCtrl = async ({ body }: Request, res: Response) => {
   try {
