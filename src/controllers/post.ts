@@ -13,6 +13,25 @@ import {
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
 import fs from "fs";
+
+// const getPostsCtrl = async (req: Request, res: Response) => {
+//   try {
+//     const { page = 1, perPage = 3 } = req.query;
+//     const currentPage = parseInt(page as string);
+//     const postsPerPage = parseInt(perPage as string);
+
+//     const { posts, totalPages } = await getPostService(
+//       currentPage,
+//       postsPerPage
+//     );
+
+//     res.json({ posts, totalPages });
+//   } catch (e) {
+//     console.error(e);
+//     handleHttp(res, "Error al obtener publicaciones");
+//   }
+// };
+
 const getPostsCtrl = async (req: Request, res: Response) => {
   try {
     const { page = 1, perPage = 3 } = req.query;
@@ -24,17 +43,39 @@ const getPostsCtrl = async (req: Request, res: Response) => {
       postsPerPage
     );
 
-    res.json({ posts, totalPages });
+    const postsWithoutContent = posts.map((post) => {
+      const { content, comments, updatedAt, ...postWithoutContent } =
+        post.toObject();
+      return postWithoutContent;
+    });
+
+    res.json({ posts: postsWithoutContent, totalPages });
   } catch (e) {
     console.error(e);
     handleHttp(res, "Error al obtener publicaciones");
   }
 };
 
+// const getAllPosts = async (req: Request, res: Response) => {
+//   try {
+//     const response = await getAllPostsService();
+//     res.json(response);
+//   } catch (e) {
+//     console.error(e);
+//     handleHttp(res, "Error al obtener todas publicaciones");
+//   }
+// };
+
 const getAllPosts = async (req: Request, res: Response) => {
   try {
     const response = await getAllPostsService();
-    res.json(response);
+    // Removiendo el campo de contenido de cada post
+    const postsWithoutContent = response.map((post) => {
+      const { content, comments, updatedAt, ...postWithoutContent } =
+        post.toObject();
+      return postWithoutContent;
+    });
+    res.json(postsWithoutContent);
   } catch (e) {
     console.error(e);
     handleHttp(res, "Error al obtener todas publicaciones");
@@ -145,11 +186,29 @@ const getCommentCtrl = async (req: Request, res: Response) => {
   }
 };
 
+// const getRelatedPostsCtrl = async (req: Request, res: Response) => {
+//   try {
+//     const postId = req.params.id;
+//     const relatedPosts = await getRelatedPostsService(postId);
+//     res.json(relatedPosts);
+//   } catch (error) {
+//     res.status(500).json({ error: "Error al obtener los posts relacionados." });
+//   }
+// };
+
 const getRelatedPostsCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
     const relatedPosts = await getRelatedPostsService(postId);
-    res.json(relatedPosts);
+
+    // Removiendo el campo de contenido de cada post relacionado
+    const postsWithoutContent = relatedPosts.map((post) => {
+      const { content, comments, updatedAt, ...postWithoutContent } =
+        post.toObject();
+      return postWithoutContent;
+    });
+
+    res.json(postsWithoutContent);
   } catch (error) {
     res.status(500).json({ error: "Error al obtener los posts relacionados." });
   }
