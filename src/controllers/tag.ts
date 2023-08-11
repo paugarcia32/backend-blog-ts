@@ -1,5 +1,11 @@
 import { Request, Response } from "express";
-import { createTagService, getTagsService } from "../services/tag";
+import {
+  createTagService,
+  getTagsService,
+  deleteTagService,
+  updateTagService,
+  getTagCountService,
+} from "../services/tag";
 
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -25,4 +31,42 @@ const getTagsCtrl = async (req: Request, res: Response) => {
   }
 };
 
-export { createTagCtrl, getTagsCtrl };
+const deleteTagCtrl = async (req: Request, res: Response) => {
+  try {
+    const tagId = req.params.tagId;
+
+    const deletedTag = await deleteTagService(tagId);
+    res.json({ message: "Tag deleted successfully", deletedTag });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting tag" });
+  }
+};
+
+const updateTagCtrl = async (req: Request, res: Response) => {
+  try {
+    const tagId = req.params.tagId;
+    const { title } = req.body;
+
+    const updatedTag = await updateTagService(tagId, title);
+    res.json({ message: "Tag updated successfully", updatedTag });
+  } catch (error) {
+    res.status(500).json({ message: "Error updating tag" });
+  }
+};
+
+const getTagCountCtrl = async (req: Request, res: Response) => {
+  try {
+    const tagCount = await getTagCountService();
+    res.json({ tagCount });
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving tag count" });
+  }
+};
+
+export {
+  createTagCtrl,
+  getTagsCtrl,
+  deleteTagCtrl,
+  updateTagCtrl,
+  getTagCountCtrl,
+};

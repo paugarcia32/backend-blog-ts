@@ -24,4 +24,63 @@ const getTagsService = async (): Promise<ITag[]> => {
   const tags = await TagModel.find();
   return tags;
 };
-export { createTagService, getTagsService };
+
+const deleteTagService = async (tagId: string): Promise<ITag | null> => {
+  try {
+    // Find the tag by its ID
+    const tag = await TagModel.findById(tagId);
+
+    if (!tag) {
+      throw new Error("Tag not found");
+    }
+
+    // Remove the tag's reference from associated posts
+    await PostModel.updateMany({ tags: tagId }, { $pull: { tags: tagId } });
+
+    // Delete the tag
+    await TagModel.deleteOne({ _id: tagId });
+
+    return tag;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const updateTagService = async (
+  tagId: string,
+  newTitle: string
+): Promise<ITag | null> => {
+  try {
+    // Find the tag by its ID
+    const tag = await TagModel.findById(tagId);
+
+    if (!tag) {
+      throw new Error("Tag not found");
+    }
+
+    // Update the tag's title
+    tag.title = newTitle;
+    await tag.save();
+
+    return tag;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getTagCountService = async (): Promise<number> => {
+  try {
+    const tagCount = await TagModel.countDocuments();
+    return tagCount;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {
+  createTagService,
+  getTagsService,
+  deleteTagService,
+  updateTagService,
+  getTagCountService,
+};
