@@ -12,6 +12,9 @@ import {
   getPostsCountCtrl,
   deletePostCtrl,
   getAllPostNamesCtrl,
+  getAllCommentsCtrl,
+  addLikeCtrl,
+  removeLikeCtrl,
 } from "../controllers/post";
 import { verifyTokenMiddleware } from "../utils/jwt.handle";
 
@@ -43,5 +46,11 @@ router.get("/post/:id/related", getRelatedPostsCtrl);
 router.get("/posts/:tagId", getPostsTagsCtrl);
 
 router.delete("/post/:id", verifyTokenMiddleware, deletePostCtrl);
+
+router.get("/comments", getAllCommentsCtrl);
+
+router.post("/comment/:id/like", addLikeCtrl);
+
+router.post("/comment/:id/dislike", removeLikeCtrl);
 
 export { router };

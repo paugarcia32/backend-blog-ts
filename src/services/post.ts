@@ -146,6 +146,7 @@ const createCommentService = async ({
   contenido: string;
 }): Promise<IComment> => {
   const newComment = new CommentModel({
+    postId,
     autor,
     contenido,
     fecha_comentario: new Date().toISOString(),
@@ -249,6 +250,59 @@ const getAllPostNamesService = async (): Promise<string[]> => {
   }
 };
 
+const getAllCommentsService = async (): Promise<IComment[]> => {
+  try {
+    const comments: IComment[] = await CommentModel.find().populate(
+      "postId",
+      "title"
+    );
+    // .exec();
+
+    return comments;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching comments");
+  }
+};
+
+const addLikeService = async (commentId: string): Promise<IComment> => {
+  try {
+    const updatedComment = await CommentModel.findByIdAndUpdate(
+      commentId,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+
+    if (!updatedComment) {
+      throw new Error("Comment not found");
+    }
+
+    return updatedComment;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error adding like to comment");
+  }
+};
+
+const removeLikeService = async (commentId: string): Promise<IComment> => {
+  try {
+    const updatedComment = await CommentModel.findByIdAndUpdate(
+      commentId,
+      { $inc: { likes: -1 } },
+      { new: true }
+    );
+
+    if (!updatedComment) {
+      throw new Error("Comment not found");
+    }
+
+    return updatedComment;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error removing like from comment");
+  }
+};
+
 export {
   getPostService,
   getAllPostsService,
@@ -262,4 +316,7 @@ export {
   getPostsCountService,
   deletePostService,
   getAllPostNamesService,
+  getAllCommentsService,
+  addLikeService,
+  removeLikeService,
 };

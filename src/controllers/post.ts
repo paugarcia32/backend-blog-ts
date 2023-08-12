@@ -12,6 +12,9 @@ import {
   getPostsCountService,
   deletePostService,
   getAllPostNamesService,
+  getAllCommentsService,
+  addLikeService,
+  removeLikeService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -220,6 +223,40 @@ const getAllPostNamesCtrl = async (req: Request, res: Response) => {
   }
 };
 
+const getAllCommentsCtrl = async (req: Request, res: Response) => {
+  try {
+    const comments = await getAllCommentsService();
+    res.json(comments);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error fetching comments" });
+  }
+};
+
+const addLikeCtrl = async (req: Request, res: Response) => {
+  try {
+    const commentId = req.params.id;
+    const updatedComment = await addLikeService(commentId);
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error adding like to comment" });
+  }
+};
+
+const removeLikeCtrl = async (req: Request, res: Response) => {
+  try {
+    const commentId = req.params.id;
+    const updatedComment = await removeLikeService(commentId);
+
+    res.json(updatedComment);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error removing like from comment" });
+  }
+};
+
 export {
   getPostsCtrl,
   getAllPosts,
@@ -233,4 +270,7 @@ export {
   getPostsCountCtrl,
   deletePostCtrl,
   getAllPostNamesCtrl,
+  getAllCommentsCtrl,
+  addLikeCtrl,
+  removeLikeCtrl,
 };
