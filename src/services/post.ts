@@ -212,6 +212,43 @@ const getPostsTagsService = async (tagId: string) => {
   return posts as IPost[];
 };
 
+const getPostsCountService = async () => {
+  try {
+    const totalPosts = await Post.countDocuments();
+    return totalPosts;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al obtener el número total de posts.");
+  }
+};
+
+const deletePostService = async (postId: string) => {
+  try {
+    const post = await Post.findById(postId);
+
+    if (!post) {
+      throw new Error("El post no existe.");
+    }
+
+    await post.deleteOne();
+
+    return post;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al eliminar el post.");
+  }
+};
+
+const getAllPostNamesService = async (): Promise<string[]> => {
+  try {
+    const posts = await PostModel.find({}, "title");
+    return posts.map((post: IPost) => post.title);
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al obtener los nombres de los posts.");
+  }
+};
+
 export {
   getPostService,
   getAllPostsService,
@@ -222,4 +259,7 @@ export {
   getCommentService,
   getRelatedPostsService,
   getPostsTagsService,
+  getPostsCountService,
+  deletePostService,
+  getAllPostNamesService,
 };

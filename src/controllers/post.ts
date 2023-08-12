@@ -9,28 +9,13 @@ import {
   getCommentService,
   getRelatedPostsService,
   getPostsTagsService,
+  getPostsCountService,
+  deletePostService,
+  getAllPostNamesService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
 import fs from "fs";
-
-// const getPostsCtrl = async (req: Request, res: Response) => {
-//   try {
-//     const { page = 1, perPage = 3 } = req.query;
-//     const currentPage = parseInt(page as string);
-//     const postsPerPage = parseInt(perPage as string);
-
-//     const { posts, totalPages } = await getPostService(
-//       currentPage,
-//       postsPerPage
-//     );
-
-//     res.json({ posts, totalPages });
-//   } catch (e) {
-//     console.error(e);
-//     handleHttp(res, "Error al obtener publicaciones");
-//   }
-// };
 
 const getPostsCtrl = async (req: Request, res: Response) => {
   try {
@@ -55,16 +40,6 @@ const getPostsCtrl = async (req: Request, res: Response) => {
     handleHttp(res, "Error al obtener publicaciones");
   }
 };
-
-// const getAllPosts = async (req: Request, res: Response) => {
-//   try {
-//     const response = await getAllPostsService();
-//     res.json(response);
-//   } catch (e) {
-//     console.error(e);
-//     handleHttp(res, "Error al obtener todas publicaciones");
-//   }
-// };
 
 const getAllPosts = async (req: Request, res: Response) => {
   try {
@@ -122,10 +97,10 @@ const createPost = async (req: Request, res: Response) => {
 const getSinglePostCtrl = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const response = await getSinglePostService(id); // ¡Asegúrate de agregar await aquí!
+    const response = await getSinglePostService(id);
     res.json(response);
   } catch (error) {
-    handleHttp(res, "ERROR_UPDATE_CHALLENGE");
+    handleHttp(res, "Error get single post");
   }
 };
 
@@ -186,16 +161,6 @@ const getCommentCtrl = async (req: Request, res: Response) => {
   }
 };
 
-// const getRelatedPostsCtrl = async (req: Request, res: Response) => {
-//   try {
-//     const postId = req.params.id;
-//     const relatedPosts = await getRelatedPostsService(postId);
-//     res.json(relatedPosts);
-//   } catch (error) {
-//     res.status(500).json({ error: "Error al obtener los posts relacionados." });
-//   }
-// };
-
 const getRelatedPostsCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
@@ -225,6 +190,36 @@ const getPostsTagsCtrl = async (req: Request, res: Response) => {
   }
 };
 
+const getPostsCountCtrl = async (req: Request, res: Response) => {
+  try {
+    const totalPosts = await getPostsCountService(); // Llama al servicio correspondiente
+    res.json({ totalPosts });
+  } catch (error) {
+    console.error(error);
+    handleHttp(res, "Error al obtener el número total de posts.");
+  }
+};
+
+const deletePostCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const deletedPost = await deletePostService(postId);
+    res.json(deletedPost);
+  } catch (error) {
+    console.error(error);
+    handleHttp(res, "Error al eliminar el post.");
+  }
+};
+
+const getAllPostNamesCtrl = async (req: Request, res: Response) => {
+  try {
+    const postNames = await getAllPostNamesService();
+    res.json(postNames);
+  } catch (error) {
+    handleHttp(res, "Error al obtener los nombres de los posts.");
+  }
+};
+
 export {
   getPostsCtrl,
   getAllPosts,
@@ -235,4 +230,7 @@ export {
   getCommentCtrl,
   getRelatedPostsCtrl,
   getPostsTagsCtrl,
+  getPostsCountCtrl,
+  deletePostCtrl,
+  getAllPostNamesCtrl,
 };

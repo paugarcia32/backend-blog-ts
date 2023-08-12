@@ -5,6 +5,8 @@ import "dotenv/config";
 import { router as userRouter } from "./routes/user";
 import { router as postRouter } from "./routes/post";
 import { router as tagRouter } from "./routes/tag";
+import { router as messageRouter } from "./routes/message";
+
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -21,6 +23,7 @@ import "./models/Tag";
 app.use("/", userRouter);
 app.use("/", postRouter);
 app.use("/", tagRouter);
+app.use("/", messageRouter);
 
 db().then(() => {
   console.log("Connection is ready...");
