@@ -77,10 +77,21 @@ const getTagCountService = async (): Promise<number> => {
   }
 };
 
+const getTagByIdService = async (tagId: string) => {
+  try {
+    const tag = await TagModel.findById(tagId);
+    return tag;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error fetching tag by ID");
+  }
+};
+
 export {
   createTagService,
   getTagsService,
   deleteTagService,
   updateTagService,
   getTagCountService,
+  getTagByIdService,
 };

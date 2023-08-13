@@ -5,6 +5,7 @@ import {
   deleteTagService,
   updateTagService,
   getTagCountService,
+  getTagByIdService,
 } from "../services/tag";
 
 import { handleHttp } from "../utils/error.handle";
@@ -63,10 +64,22 @@ const getTagCountCtrl = async (req: Request, res: Response) => {
   }
 };
 
+const getTagByIdCtrl = async (req: Request, res: Response) => {
+  try {
+    const { tagId } = req.params;
+    const tag = await getTagByIdService(tagId);
+    res.json(tag);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching tag by ID" });
+  }
+};
+
 export {
   createTagCtrl,
   getTagsCtrl,
   deleteTagCtrl,
   updateTagCtrl,
   getTagCountCtrl,
+  getTagByIdCtrl,
 };
