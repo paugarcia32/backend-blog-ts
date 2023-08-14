@@ -51,6 +51,82 @@ interface CreatePostParams {
   tags: string[];
 }
 
+// const createPostService = async ({
+//   title,
+//   summary,
+//   content,
+//   cover,
+//   authorId,
+//   tags,
+// }: CreatePostParams) => {
+//   const tagsArray = tags.map((tag) => new Types.ObjectId(tag));
+
+//   const postDoc = await Post.create({
+//     title,
+//     summary,
+//     content,
+//     cover,
+//     author: new Types.ObjectId(authorId),
+//     tag: tagsArray,
+//   });
+
+//   const postId = postDoc._id;
+
+//   for (const tagId of tagsArray) {
+//     const tagToUpdate = await Tag.findById(tagId);
+//     if (!tagToUpdate) {
+//       throw new Error(`El tag con ID ${tagId} no existe.`);
+//     }
+//     tagToUpdate.posts.push(postId);
+//     await tagToUpdate.save();
+//   }
+
+//   return postDoc;
+// };
+
+// const updatePostService = async ({
+//   postId,
+//   title,
+//   summary,
+//   content,
+//   authorId,
+//   file,
+// }: UpdatePostParams): Promise<IPost | null> => {
+//   const post = await Post.findById(postId);
+
+//   if (!post) {
+//     throw new Error("El post no existe.");
+//   }
+
+//   if (post.author.toString() !== authorId) {
+//     throw new Error("No tienes permiso para editar este post.");
+//   }
+
+//   post.title = title;
+//   post.summary = summary;
+//   post.content = content;
+
+//   if (file) {
+//     const { originalname, path } = file;
+//     const parts = originalname.split(".");
+//     const ext = parts[parts.length - 1];
+//     const newPath = path + "." + ext;
+//     fs.renameSync(path, newPath);
+//     post.cover = newPath;
+//   }
+
+//   const updatedPost = await post.save();
+//   return updatedPost;
+// };
+
+const renameAndAddExtension = (path: string, originalname: string) => {
+  const parts = originalname.split(".");
+  const ext = parts[parts.length - 1];
+  const newPath = path + "." + ext;
+  fs.renameSync(path, newPath);
+  return newPath;
+};
+
 const createPostService = async ({
   title,
   summary,
@@ -65,7 +141,7 @@ const createPostService = async ({
     title,
     summary,
     content,
-    cover,
+    cover: renameAndAddExtension(cover, "your_desired_filename"),
     author: new Types.ObjectId(authorId),
     tag: tagsArray,
   });
@@ -83,23 +159,6 @@ const createPostService = async ({
 
   return postDoc;
 };
-
-const getSinglePostService = async (id: string): Promise<IPost | null> => {
-  const postDoc = await Post.findById(id)
-    .populate("author", ["username"])
-    .populate("tag", ["title"]);
-
-  return postDoc;
-};
-
-interface UpdatePostParams {
-  postId: string;
-  title: string;
-  summary: string;
-  content: string;
-  authorId: string;
-  file?: Express.Multer.File;
-}
 
 const updatePostService = async ({
   postId,
@@ -125,16 +184,29 @@ const updatePostService = async ({
 
   if (file) {
     const { originalname, path } = file;
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
-    post.cover = newPath;
+    post.cover = renameAndAddExtension(path, originalname);
   }
 
   const updatedPost = await post.save();
   return updatedPost;
 };
+
+const getSinglePostService = async (id: string): Promise<IPost | null> => {
+  const postDoc = await Post.findById(id)
+    .populate("author", ["username"])
+    .populate("tag", ["title"]);
+
+  return postDoc;
+};
+
+interface UpdatePostParams {
+  postId: string;
+  title: string;
+  summary: string;
+  content: string;
+  authorId: string;
+  file?: Express.Multer.File;
+}
 
 const getRelatedPostsService = async (postId: string) => {
   const post = await PostModel.findById(postId).populate("tag");

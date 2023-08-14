@@ -43,7 +43,6 @@ const getPostsCtrl = async (req: Request, res: Response) => {
 const getAllPosts = async (req: Request, res: Response) => {
   try {
     const response = await getAllPostsService();
-    // Removiendo el campo de contenido de cada post
     const postsWithoutContent = response.map((post) => {
       const { content, comments, updatedAt, ...postWithoutContent } =
         post.toObject();
@@ -56,7 +55,7 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
-const createPost = async (req: Request, res: Response) => {
+const createPostCtrl = async (req: Request, res: Response) => {
   try {
     if (!req.file) {
       throw new Error("No file received.");
@@ -67,11 +66,6 @@ const createPost = async (req: Request, res: Response) => {
       throw new Error("Invalid file data received.");
     }
 
-    const parts = originalname.split(".");
-    const ext = parts[parts.length - 1];
-    const newPath = path + "." + ext;
-    fs.renameSync(path, newPath);
-
     const { token } = req.cookies;
     verifyToken(req, res, async () => {
       const { title, summary, content, tag } = req.body;
@@ -81,7 +75,7 @@ const createPost = async (req: Request, res: Response) => {
         title,
         summary,
         content,
-        cover: newPath,
+        cover: path,
         authorId: req.user?.id || "",
         tags: tagsArray,
       });
@@ -92,14 +86,40 @@ const createPost = async (req: Request, res: Response) => {
     handleHttp(res, "Error al crear post");
   }
 };
+
+const updatePostCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+    const { title, summary, content } = req.body;
+
+    verifyToken(req, res, async () => {
+      const decodedToken = req.user;
+      if (!decodedToken) {
+        return res.status(401).json({ error: "Token inválido" });
+      }
+
+      const updatedPost = await updatePostService({
+        postId,
+        title,
+        summary,
+        content,
+        authorId: decodedToken.id,
+        file: req.file,
+      });
+
+      res.json(updatedPost);
+    });
+  } catch (error) {
+    handleHttp(res, "Error al actualizar el post");
+  }
+};
+
 const deletePostCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
 
-    // Elimina los comentarios asociados al post
     await deleteCommentsByPostIdService(postId);
 
-    // Elimina el post
     const deletedPost = await deletePostService(postId);
 
     res.json(deletedPost);
@@ -119,42 +139,11 @@ const getSinglePostCtrl = async (req: Request, res: Response) => {
   }
 };
 
-const updatePostCtrl = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.id;
-    const { title, summary, content } = req.body;
-
-    // Verificar si el usuario está autenticado
-    verifyToken(req, res, async () => {
-      // Marca esta función como async
-      const decodedToken = req.user; // Aquí ya tienes el usuario decodificado
-      if (!decodedToken) {
-        return res.status(401).json({ error: "Token inválido" });
-      }
-
-      // Actualizar el post utilizando el servicio
-      const updatedPost = await updatePostService({
-        postId,
-        title,
-        summary,
-        content,
-        authorId: decodedToken.id,
-        file: req.file,
-      });
-
-      res.json(updatedPost);
-    });
-  } catch (error) {
-    handleHttp(res, "Error al actualizar el post");
-  }
-};
-
 const getRelatedPostsCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
     const relatedPosts = await getRelatedPostsService(postId);
 
-    // Removiendo el campo de contenido de cada post relacionado
     const postsWithoutContent = relatedPosts.map((post) => {
       const { content, comments, updatedAt, ...postWithoutContent } =
         post.toObject();
@@ -180,7 +169,7 @@ const getPostsTagsCtrl = async (req: Request, res: Response) => {
 
 const getPostsCountCtrl = async (req: Request, res: Response) => {
   try {
-    const totalPosts = await getPostsCountService(); // Llama al servicio correspondiente
+    const totalPosts = await getPostsCountService();
     res.json({ totalPosts });
   } catch (error) {
     console.error(error);
@@ -200,7 +189,7 @@ const getAllPostNamesCtrl = async (req: Request, res: Response) => {
 export {
   getPostsCtrl,
   getAllPosts,
-  createPost,
+  createPostCtrl,
   getRelatedPostsCtrl,
   getSinglePostCtrl,
   updatePostCtrl,

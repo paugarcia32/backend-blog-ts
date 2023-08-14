@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   getPostsCtrl,
   getAllPosts,
-  createPost,
+  createPostCtrl,
   getSinglePostCtrl,
   updatePostCtrl,
   getPostsTagsCtrl,
@@ -26,11 +26,11 @@ router.get("/post/count", getPostsCountCtrl);
 
 router.get("/post/names", getAllPostNamesCtrl);
 
-router.post("/post", uploadMiddleware.single("file"), createPost);
-
-router.get("/post/:id", getSinglePostCtrl);
+router.post("/post", uploadMiddleware.single("file"), createPostCtrl);
 
 router.put("/post/:id", uploadMiddleware.single("file"), updatePostCtrl);
+
+router.get("/post/:id", getSinglePostCtrl);
 
 router.get("/post/:id/related", getRelatedPostsCtrl);
 
