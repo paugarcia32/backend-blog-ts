@@ -76,7 +76,7 @@ const createPostService = async ({
     title,
     summary,
     content,
-    cover: renameAndAddExtension(cover, "your_desired_filename"),
+    cover: renameAndAddExtension(cover, "png"),
     author: author,
     tag: tagsArray,
     comments: [],
@@ -184,6 +184,37 @@ const getPostsCountService = async () => {
   }
 };
 
+// const deletePostService = async (postId: string) => {
+//   try {
+//     const post = await PostModel.findById(postId);
+
+//     if (!post) {
+//       throw new Error("El post no existe.");
+//     }
+
+//     const tagsArray: Types.ObjectId[] = post.tag
+//       .filter((tag) => tag instanceof Types.ObjectId)
+//       .map((tagId) => tagId as Types.ObjectId);
+
+//     for (const tagId of tagsArray) {
+//       const tagToUpdate = await Tag.findById(tagId);
+//       if (tagToUpdate) {
+//         tagToUpdate.posts = tagToUpdate.posts.filter(
+//           (post) => post.toString() !== postId
+//         );
+//         await tagToUpdate.save();
+//       }
+//     }
+
+//     await post.deleteOne();
+
+//     return post;
+//   } catch (error) {
+//     console.error(error);
+//     throw new Error("Error al eliminar el post.");
+//   }
+// };
+
 const deletePostService = async (postId: string) => {
   try {
     const post = await PostModel.findById(postId);
@@ -195,6 +226,9 @@ const deletePostService = async (postId: string) => {
     const tagsArray: Types.ObjectId[] = post.tag
       .filter((tag) => tag instanceof Types.ObjectId)
       .map((tagId) => tagId as Types.ObjectId);
+
+    // Obtener la ruta de la imagen antes de eliminar el post
+    const imagePath = post.cover;
 
     for (const tagId of tagsArray) {
       const tagToUpdate = await Tag.findById(tagId);
@@ -208,10 +242,30 @@ const deletePostService = async (postId: string) => {
 
     await post.deleteOne();
 
+    // Eliminar la imagen del sistema de archivos
+    if (imagePath) {
+      deleteImageFromPath(imagePath);
+    }
+
     return post;
   } catch (error) {
     console.error(error);
     throw new Error("Error al eliminar el post.");
+  }
+};
+
+const deleteImageFromPath = (imagePath: string) => {
+  try {
+    // Verificar si el archivo existe antes de intentar eliminarlo
+    if (fs.existsSync(imagePath)) {
+      // Eliminar el archivo
+      fs.unlinkSync(imagePath);
+      console.log(`Imagen eliminada: ${imagePath}`);
+    } else {
+      console.log(`El archivo no existe: ${imagePath}`);
+    }
+  } catch (error) {
+    console.error(`Error al eliminar la imagen: ${error}`);
   }
 };
 
