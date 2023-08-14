@@ -15,6 +15,7 @@ import {
   getAllCommentsCtrl,
   addLikeCtrl,
   removeLikeCtrl,
+  deleteCommentCtrl,
 } from "../controllers/post";
 import { verifyTokenMiddleware } from "../utils/jwt.handle";
 
@@ -52,5 +53,7 @@ router.get("/comments", getAllCommentsCtrl);
 router.post("/comment/:id/like", addLikeCtrl);
 
 router.post("/comment/:id/dislike", removeLikeCtrl);
+
+router.delete("/comment/:id", deleteCommentCtrl);
 
 export { router };

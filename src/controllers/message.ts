@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   createMessageService,
+  deleteMessageService,
   getAllMessagesService,
 } from "../services/message";
 
@@ -26,4 +27,15 @@ const getAllMessagesCtrl = async (req: Request, res: Response) => {
   }
 };
 
-export { createMessageCtrl, getAllMessagesCtrl };
+const deleteMessageCtrl = async (req: Request, res: Response) => {
+  try {
+    const messageId = req.params.id;
+    const deletedMessage = await deleteMessageService(messageId);
+    res.json({ message: "Message deleted successfully", deletedMessage });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error deleting message" });
+  }
+};
+
+export { createMessageCtrl, getAllMessagesCtrl, deleteMessageCtrl };

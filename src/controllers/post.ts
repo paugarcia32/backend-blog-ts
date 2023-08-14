@@ -11,10 +11,12 @@ import {
   getPostsTagsService,
   getPostsCountService,
   deletePostService,
+  deleteCommentsByPostIdService,
   getAllPostNamesService,
   getAllCommentsService,
   addLikeService,
   removeLikeService,
+  deleteCommentService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
@@ -206,7 +208,13 @@ const getPostsCountCtrl = async (req: Request, res: Response) => {
 const deletePostCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
+
+    // Elimina los comentarios asociados al post
+    await deleteCommentsByPostIdService(postId);
+
+    // Elimina el post
     const deletedPost = await deletePostService(postId);
+
     res.json(deletedPost);
   } catch (error) {
     console.error(error);
@@ -257,6 +265,18 @@ const removeLikeCtrl = async (req: Request, res: Response) => {
   }
 };
 
+const deleteCommentCtrl = async (req: Request, res: Response) => {
+  try {
+    const commentId = req.params.id;
+    const deletedComment = await deleteCommentService(commentId);
+
+    res.json(deletedComment);
+  } catch (error) {
+    console.error(error);
+    handleHttp(res, "Error al eliminar el comentario.");
+  }
+};
+
 export {
   getPostsCtrl,
   getAllPosts,
@@ -273,4 +293,5 @@ export {
   getAllCommentsCtrl,
   addLikeCtrl,
   removeLikeCtrl,
+  deleteCommentCtrl,
 };

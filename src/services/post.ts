@@ -225,10 +225,24 @@ const getPostsCountService = async () => {
 
 const deletePostService = async (postId: string) => {
   try {
-    const post = await Post.findById(postId);
+    const post = await PostModel.findById(postId);
 
     if (!post) {
       throw new Error("El post no existe.");
+    }
+
+    const tagsArray: Types.ObjectId[] = post.tag
+      .filter((tag) => tag instanceof Types.ObjectId)
+      .map((tagId) => tagId as Types.ObjectId);
+
+    for (const tagId of tagsArray) {
+      const tagToUpdate = await Tag.findById(tagId);
+      if (tagToUpdate) {
+        tagToUpdate.posts = tagToUpdate.posts.filter(
+          (post) => post.toString() !== postId
+        );
+        await tagToUpdate.save();
+      }
     }
 
     await post.deleteOne();
@@ -237,6 +251,16 @@ const deletePostService = async (postId: string) => {
   } catch (error) {
     console.error(error);
     throw new Error("Error al eliminar el post.");
+  }
+};
+
+const deleteCommentsByPostIdService = async (postId: string) => {
+  try {
+    // Busca y elimina los comentarios asociados al post por su ID
+    await CommentModel.deleteMany({ postId });
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al eliminar los comentarios del post.");
   }
 };
 
@@ -252,10 +276,9 @@ const getAllPostNamesService = async (): Promise<string[]> => {
 
 const getAllCommentsService = async (): Promise<IComment[]> => {
   try {
-    const comments: IComment[] = await CommentModel.find().populate(
-      "postId",
-      "title"
-    );
+    const comments: IComment[] = await CommentModel.find()
+      .populate("postId", "title")
+      .sort({ date: -1 }); // Ordena por fecha de creación en orden descendente (más nuevo primero)
     // .exec();
 
     return comments;
@@ -303,6 +326,22 @@ const removeLikeService = async (commentId: string): Promise<IComment> => {
   }
 };
 
+const deleteCommentService = async (commentId: string) => {
+  try {
+    // Encuentra y elimina el comentario por su ID
+    const deletedComment = await CommentModel.findByIdAndDelete(commentId);
+
+    if (!deletedComment) {
+      throw new Error("El comentario no existe.");
+    }
+
+    return deletedComment;
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error al eliminar el comentario.");
+  }
+};
+
 export {
   getPostService,
   getAllPostsService,
@@ -315,8 +354,10 @@ export {
   getPostsTagsService,
   getPostsCountService,
   deletePostService,
+  deleteCommentsByPostIdService,
   getAllPostNamesService,
   getAllCommentsService,
   addLikeService,
   removeLikeService,
+  deleteCommentService,
 };
