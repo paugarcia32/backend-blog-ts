@@ -6,6 +6,7 @@ import { router as userRouter } from "./routes/user";
 import { router as postRouter } from "./routes/post";
 import { router as tagRouter } from "./routes/tag";
 import { router as messageRouter } from "./routes/message";
+import { router as commentRouter } from "./routes/comment";
 
 const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 3001;
@@ -24,6 +25,7 @@ app.use("/", userRouter);
 app.use("/", postRouter);
 app.use("/", tagRouter);
 app.use("/", messageRouter);
+app.use("/", commentRouter);
 
 db().then(() => {
   console.log("Connection is ready...");

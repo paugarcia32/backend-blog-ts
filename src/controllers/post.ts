@@ -5,22 +5,16 @@ import {
   createPostService,
   getSinglePostService,
   updatePostService,
-  createCommentService,
-  getCommentService,
-  getRelatedPostsService,
   getPostsTagsService,
   getPostsCountService,
   deletePostService,
-  deleteCommentsByPostIdService,
   getAllPostNamesService,
-  getAllCommentsService,
-  addLikeService,
-  removeLikeService,
-  deleteCommentService,
+  getRelatedPostsService,
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
 import fs from "fs";
+import { deleteCommentsByPostIdService } from "../services/comment";
 
 const getPostsCtrl = async (req: Request, res: Response) => {
   try {
@@ -98,6 +92,22 @@ const createPost = async (req: Request, res: Response) => {
     handleHttp(res, "Error al crear post");
   }
 };
+const deletePostCtrl = async (req: Request, res: Response) => {
+  try {
+    const postId = req.params.id;
+
+    // Elimina los comentarios asociados al post
+    await deleteCommentsByPostIdService(postId);
+
+    // Elimina el post
+    const deletedPost = await deletePostService(postId);
+
+    res.json(deletedPost);
+  } catch (error) {
+    console.error(error);
+    handleHttp(res, "Error al eliminar el post.");
+  }
+};
 
 const getSinglePostCtrl = async (req: Request, res: Response) => {
   try {
@@ -136,33 +146,6 @@ const updatePostCtrl = async (req: Request, res: Response) => {
     });
   } catch (error) {
     handleHttp(res, "Error al actualizar el post");
-  }
-};
-
-const createCommentCtrl = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.id;
-    const { autor, contenido } = req.body;
-
-    const newComment = await createCommentService({
-      postId,
-      autor,
-      contenido,
-    });
-
-    res.json(newComment);
-  } catch (error) {
-    handleHttp(res, "Error al crear el comentario");
-  }
-};
-
-const getCommentCtrl = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.id;
-    const comments = await getCommentService(postId);
-    res.json(comments);
-  } catch (error) {
-    handleHttp(res, "Error al obtener los comentarios.");
   }
 };
 
@@ -205,23 +188,6 @@ const getPostsCountCtrl = async (req: Request, res: Response) => {
   }
 };
 
-const deletePostCtrl = async (req: Request, res: Response) => {
-  try {
-    const postId = req.params.id;
-
-    // Elimina los comentarios asociados al post
-    await deleteCommentsByPostIdService(postId);
-
-    // Elimina el post
-    const deletedPost = await deletePostService(postId);
-
-    res.json(deletedPost);
-  } catch (error) {
-    console.error(error);
-    handleHttp(res, "Error al eliminar el post.");
-  }
-};
-
 const getAllPostNamesCtrl = async (req: Request, res: Response) => {
   try {
     const postNames = await getAllPostNamesService();
@@ -231,67 +197,15 @@ const getAllPostNamesCtrl = async (req: Request, res: Response) => {
   }
 };
 
-const getAllCommentsCtrl = async (req: Request, res: Response) => {
-  try {
-    const comments = await getAllCommentsService();
-    res.json(comments);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error fetching comments" });
-  }
-};
-
-const addLikeCtrl = async (req: Request, res: Response) => {
-  try {
-    const commentId = req.params.id;
-    const updatedComment = await addLikeService(commentId);
-
-    res.json(updatedComment);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error adding like to comment" });
-  }
-};
-
-const removeLikeCtrl = async (req: Request, res: Response) => {
-  try {
-    const commentId = req.params.id;
-    const updatedComment = await removeLikeService(commentId);
-
-    res.json(updatedComment);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error removing like from comment" });
-  }
-};
-
-const deleteCommentCtrl = async (req: Request, res: Response) => {
-  try {
-    const commentId = req.params.id;
-    const deletedComment = await deleteCommentService(commentId);
-
-    res.json(deletedComment);
-  } catch (error) {
-    console.error(error);
-    handleHttp(res, "Error al eliminar el comentario.");
-  }
-};
-
 export {
   getPostsCtrl,
   getAllPosts,
   createPost,
+  getRelatedPostsCtrl,
   getSinglePostCtrl,
   updatePostCtrl,
-  createCommentCtrl,
-  getCommentCtrl,
-  getRelatedPostsCtrl,
+  deletePostCtrl,
   getPostsTagsCtrl,
   getPostsCountCtrl,
-  deletePostCtrl,
   getAllPostNamesCtrl,
-  getAllCommentsCtrl,
-  addLikeCtrl,
-  removeLikeCtrl,
-  deleteCommentCtrl,
 };

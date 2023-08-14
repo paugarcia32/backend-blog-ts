@@ -5,17 +5,11 @@ import {
   createPost,
   getSinglePostCtrl,
   updatePostCtrl,
-  createCommentCtrl,
-  getCommentCtrl,
-  getRelatedPostsCtrl,
   getPostsTagsCtrl,
   getPostsCountCtrl,
   deletePostCtrl,
   getAllPostNamesCtrl,
-  getAllCommentsCtrl,
-  addLikeCtrl,
-  removeLikeCtrl,
-  deleteCommentCtrl,
+  getRelatedPostsCtrl,
 } from "../controllers/post";
 import { verifyTokenMiddleware } from "../utils/jwt.handle";
 
@@ -38,22 +32,10 @@ router.get("/post/:id", getSinglePostCtrl);
 
 router.put("/post/:id", uploadMiddleware.single("file"), updatePostCtrl);
 
-router.post("/post/:id/comment", createCommentCtrl);
-
-router.get("/post/:id/comments", getCommentCtrl);
-
 router.get("/post/:id/related", getRelatedPostsCtrl);
 
 router.get("/posts/:tagId", getPostsTagsCtrl);
 
 router.delete("/post/:id", verifyTokenMiddleware, deletePostCtrl);
-
-router.get("/comments", getAllCommentsCtrl);
-
-router.post("/comment/:id/like", addLikeCtrl);
-
-router.post("/comment/:id/dislike", removeLikeCtrl);
-
-router.delete("/comment/:id", deleteCommentCtrl);
 
 export { router };
