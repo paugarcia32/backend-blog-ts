@@ -13,8 +13,10 @@ import {
 } from "../services/post";
 import { handleHttp } from "../utils/error.handle";
 import { verifyToken } from "../utils/jwt.handle";
-import fs from "fs";
 import { deleteCommentsByPostIdService } from "../services/comment";
+import { IPost } from "../interfaces/post.interface";
+import { Types } from "mongoose";
+import { IUser } from "../interfaces/user.interface";
 
 const getPostsCtrl = async (req: Request, res: Response) => {
   try {
@@ -58,39 +60,47 @@ const getAllPosts = async (req: Request, res: Response) => {
 const createPostCtrl = async (req: Request, res: Response) => {
   try {
     if (!req.file) {
-      throw new Error("No file received.");
+      throw new Error("No se recibió ningún archivo.");
     }
 
     const { originalname, path } = req.file;
     if (!originalname || !path) {
-      throw new Error("Invalid file data received.");
+      throw new Error("Datos de archivo inválidos.");
     }
 
-    const { token } = req.cookies;
     verifyToken(req, res, async () => {
       const { title, summary, content, tag } = req.body;
       const tagsArray = Array.isArray(tag) ? tag : [tag];
+
+      const authorId = req.user?.id;
+      if (!authorId) {
+        throw new Error("ID de autor no disponible.");
+      }
 
       const postDoc = await createPostService({
         title,
         summary,
         content,
         cover: path,
-        authorId: req.user?.id || "",
-        tags: tagsArray,
+        author: new Types.ObjectId(authorId),
+        tag: tagsArray,
+        comments: [],
+        file: req.file as Express.Multer.File,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       });
 
       res.json(postDoc);
     });
   } catch (error) {
-    handleHttp(res, "Error al crear post");
+    handleHttp(res, "Error al crear el post");
   }
 };
 
 const updatePostCtrl = async (req: Request, res: Response) => {
   try {
     const postId = req.params.id;
-    const { title, summary, content } = req.body;
+    const { title, summary, content, tag } = req.body;
 
     verifyToken(req, res, async () => {
       const decodedToken = req.user;
@@ -105,6 +115,7 @@ const updatePostCtrl = async (req: Request, res: Response) => {
         content,
         authorId: decodedToken.id,
         file: req.file,
+        tag,
       });
 
       res.json(updatedPost);
