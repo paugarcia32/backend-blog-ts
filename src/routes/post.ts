@@ -12,6 +12,7 @@ import {
   getRelatedPostsCtrl,
 } from "../controllers/post";
 import { verifyTokenMiddleware } from "../utils/jwt.handle";
+import { validateSchema } from "../utils/validator.handle";
 
 const multer = require("multer");
 const uploadMiddleware = multer({ dest: "src/uploads/" });
