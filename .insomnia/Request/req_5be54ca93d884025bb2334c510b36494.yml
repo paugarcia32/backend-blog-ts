@@ -1,0 +1,31 @@
+_id: req_5be54ca93d884025bb2334c510b36494
+type: Request
+parentId: fld_d692f5cbf54b439bb94f6a37e0cb6d31
+modified: 1692136941620
+created: 1692136913022
+url: "{{ _.URL }}/post/64c1aeddf616b705e7b50c0a/comment"
+name: Create Comment in Post
+description: ""
+method: POST
+body:
+  mimeType: application/json
+  text: |
+    {
+      "autor": "Josep",
+      "contenido": "Contenido del comentario"
+    }
+parameters: []
+headers:
+  - name: Content-Type
+    value: application/json
+  - name: User-Agent
+    value: Insomnia/2023.5.2
+authentication: {}
+metaSortKey: -1692136913022
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

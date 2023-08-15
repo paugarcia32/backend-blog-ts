@@ -1,0 +1,21 @@
+_id: req_de1fffd2150545198cc18368e46340f5
+type: Request
+parentId: fld_0b0f899fce7f411aab163cf368bcfde5
+modified: 1692136453098
+created: 1692136434307
+url: "{{ _.URL }}/post?currentPage=1&postsPerPage=3"
+name: Get Posts Paginate
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692136434307
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
