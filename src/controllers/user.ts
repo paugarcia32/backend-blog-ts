@@ -32,16 +32,12 @@ const loginCtrl = async (req: Request, res: Response) => {
 
     if (typeof responseUser === "object") {
       if (responseUser.id && responseUser.username) {
-        // Login exitoso, agregar el token a la respuesta
         const token = generateToken(responseUser);
-        // res.status(200).json({ ...responseUser, token });
         res.cookie("token", token).json({ responseUser });
       } else {
-        // Error de inicio de sesión
         res.status(400).send(responseUser);
       }
     } else {
-      // Error de inicio de sesión
       res.status(400).send(responseUser);
     }
   } catch (error) {
@@ -72,7 +68,6 @@ const getProfileCtrl = (req: Request, res: Response) => {
 
 const logoutCtrl = (req: Request, res: Response) => {
   try {
-    // Eliminar la cookie que contiene el token
     res.clearCookie("token").json("ok");
   } catch (error) {
     console.error(error);
