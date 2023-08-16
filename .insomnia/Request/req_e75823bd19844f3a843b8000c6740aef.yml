@@ -1,0 +1,21 @@
+_id: req_e75823bd19844f3a843b8000c6740aef
+type: Request
+parentId: fld_0b0f899fce7f411aab163cf368bcfde5
+modified: 1692136531551
+created: 1692136519710
+url: "{{ _.URL }}/post/64c1aed1f616b705e7b50bbe/related"
+name: Get Related Posts
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692136519710
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

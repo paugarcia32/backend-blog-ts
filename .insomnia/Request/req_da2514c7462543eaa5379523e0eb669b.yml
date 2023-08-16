@@ -1,0 +1,21 @@
+_id: req_da2514c7462543eaa5379523e0eb669b
+type: Request
+parentId: fld_0b0f899fce7f411aab163cf368bcfde5
+modified: 1692136341266
+created: 1692136273374
+url: "{{ _.URL }}/post/count"
+name: Count Posts
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692136273374
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

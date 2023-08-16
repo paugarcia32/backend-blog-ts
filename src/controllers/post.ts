@@ -72,6 +72,8 @@ const createPostCtrl = async (req: Request, res: Response) => {
       const { title, summary, content, tag } = req.body;
       const tagsArray = Array.isArray(tag) ? tag : [tag];
 
+      console.log("Request body:", req.body)
+
       const authorId = req.user?.id;
       if (!authorId) {
         throw new Error("ID de autor no disponible.");
@@ -84,10 +86,7 @@ const createPostCtrl = async (req: Request, res: Response) => {
         cover: path,
         author: new Types.ObjectId(authorId),
         tag: tagsArray,
-        comments: [],
         file: req.file as Express.Multer.File,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       });
 
       res.json(postDoc);

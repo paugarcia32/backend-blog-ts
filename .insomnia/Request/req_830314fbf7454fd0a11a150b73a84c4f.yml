@@ -1,0 +1,21 @@
+_id: req_830314fbf7454fd0a11a150b73a84c4f
+type: Request
+parentId: fld_2589437d954e47b686dc39a48c6b0f78
+modified: 1692137305296
+created: 1692137297742
+url: "{{ _.URL }}/profile"
+name: Profile
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692137297742
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

@@ -1,0 +1,21 @@
+_id: req_d5bb88cdb7c34c94bf1a54c950e9a11c
+type: Request
+parentId: fld_d692f5cbf54b439bb94f6a37e0cb6d31
+modified: 1692137056931
+created: 1692137045507
+url: "{{ _.URL }}/comments"
+name: Get All Comments
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692137045507
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

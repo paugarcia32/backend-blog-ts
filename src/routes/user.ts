@@ -12,7 +12,7 @@ const router = Router();
 
 router.post("/register", validateSchema(registerSchema), registerCtrl);
 
-router.post("/login", validateSchema(loginSchema), loginCtrl);
+router.post("/login",validateSchema(loginSchema), loginCtrl);
 
 router.get("/profile", getProfileCtrl);
 

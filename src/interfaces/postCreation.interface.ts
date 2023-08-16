@@ -10,10 +10,10 @@ export interface IPostCreation {
   cover: string;
   author: Types.ObjectId | IUser;
   tag: Array<Types.ObjectId | ITag>;
-  comments: Array<Types.ObjectId | IComment>;
+  // comments: Array<Types.ObjectId | IComment>;
   file: Express.Multer.File;
-  createdAt: Date;
-  updatedAt: Date;
+  // createdAt: Date;
+  // updatedAt: Date;
 }
 
 export interface IPost extends IPostCreation, Document {}

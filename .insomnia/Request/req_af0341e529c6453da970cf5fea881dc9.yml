@@ -1,0 +1,21 @@
+_id: req_af0341e529c6453da970cf5fea881dc9
+type: Request
+parentId: fld_44df8a6277114091b24e46b18c3ab3b4
+modified: 1692137200193
+created: 1692137180392
+url: "{{ _.URL }}/messages"
+name: Get All Messages
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692137180392
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global

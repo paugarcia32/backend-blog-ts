@@ -1,0 +1,21 @@
+_id: req_a8aa6e53795e48b8b68f1cc28c3338fe
+type: Request
+parentId: fld_8e57869c2431406b9de8ae1890761827
+modified: 1692137022502
+created: 1692137013198
+url: "{{ _.URL }}/tags"
+name: Get All Tags
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692137013198
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
