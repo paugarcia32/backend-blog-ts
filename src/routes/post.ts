@@ -12,7 +12,10 @@ import {
   getRelatedPostsCtrl,
 } from "../controllers/post";
 import { verifyTokenMiddleware } from "../utils/jwt.handle";
-import { validateSchema } from "../utils/validator.handle";
+import {
+  validateFormDataAndJSON,
+  validateSchema,
+} from "../utils/validator.handle";
 import { createPostSchema } from "../schemas/post";
 
 const multer = require("multer");
@@ -28,7 +31,7 @@ router.get("/post/count", getPostsCountCtrl);
 
 router.get("/post/names", getAllPostNamesCtrl);
 
-router.post("/post",uploadMiddleware.single("file"), createPostCtrl);
+router.post("/post", uploadMiddleware.single("file"), createPostCtrl);
 
 router.put("/post/:id", uploadMiddleware.single("file"), updatePostCtrl);
 

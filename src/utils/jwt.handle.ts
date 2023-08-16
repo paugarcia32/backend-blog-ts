@@ -4,12 +4,12 @@ import { Request, Response, NextFunction } from "express";
 declare global {
   namespace Express {
     interface Request {
-      user?: { username: string; id: string }; // Define la propiedad 'user'
+      user?: { username: string; id: string };
     }
   }
 }
 
-const secretKey = process.env.SECRET_KEY || "yourSecretKey"; // Asegúrate de ajustar la clave secreta
+const secretKey = process.env.SECRET_KEY || "yourSecretKey";
 
 const generateToken = (data: JwtPayload): string => {
   return jwt.sign(data, secretKey);
@@ -28,7 +28,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
       id: string;
     };
 
-    req.user = decoded; // Ahora puedes agregar 'user' al objeto 'req'
+    req.user = decoded;
     next();
   } catch (err) {
     console.error("Error verifying JWT:", err);

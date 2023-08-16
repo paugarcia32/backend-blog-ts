@@ -182,7 +182,6 @@ const getPostsCountService = async () => {
   }
 };
 
-
 const deletePostService = async (postId: string) => {
   try {
     const post = await PostModel.findById(postId);

@@ -57,6 +57,85 @@ const getAllPosts = async (req: Request, res: Response) => {
   }
 };
 
+// const createPostCtrl = async (req: Request, res: Response) => {
+//   try {
+//     if (!req.file) {
+//       throw new Error("No se recibió ningún archivo.");
+//     }
+
+//     const { originalname, path } = req.file;
+//     if (!originalname || !path) {
+//       throw new Error("Datos de archivo inválidos.");
+//     }
+
+//     verifyToken(req, res, async () => {
+//       const { title, summary, content, tag } = req.body;
+//       const tagsArray = Array.isArray(tag) ? tag : [tag];
+
+//       console.log("Request body:", req.body)
+
+//       const authorId = req.user?.id;
+//       if (!authorId) {
+//         throw new Error("ID de autor no disponible.");
+//       }
+
+//       const postDoc = await createPostService({
+//         title,
+//         summary,
+//         content,
+//         cover: path,
+//         author: new Types.ObjectId(authorId),
+//         tag: tagsArray,
+//         file: req.file as Express.Multer.File,
+//       });
+
+//       res.json(postDoc);
+//     });
+//   } catch (error) {
+//     handleHttp(res, "Error al crear el post");
+//   }
+// };
+
+// const createPostCtrl = async (req: Request, res: Response) => {
+//   try {
+//     if (!req.file) {
+//       throw new Error("No se recibió ningún archivo.");
+//     }
+
+//     const { originalname, path } = req.file;
+//     if (!originalname || !path) {
+//       throw new Error("Datos de archivo inválidos.");
+//     }
+
+//     verifyToken(req, res, async () => {
+//       const { title, summary, content, tag } = req.body;
+//       const tagsArray = Array.isArray(tag) ? tag : [tag];
+
+//       console.log("Request body:", req.body);
+
+//       const authorId = req.user?.id;
+//       if (!authorId) {
+//         throw new Error("ID de autor no disponible.");
+//       }
+
+//       const postDoc = await createPostService({
+//         title,
+//         summary,
+//         content,
+//         cover: path,
+//         author: new Types.ObjectId(authorId),
+//         tag: tagsArray,
+//         file: req.file as Express.Multer.File,
+//       });
+
+//       res.json(postDoc);
+//     });
+//   } catch (error) {
+//     console.error("Error en createPostCtrl:", error); // Agrega este registro de depuración
+//     handleHttp(res, "Error al crear el post: " + error); // Proporciona el mensaje de error específico
+//   }
+// };
+
 const createPostCtrl = async (req: Request, res: Response) => {
   try {
     if (!req.file) {
@@ -69,10 +148,12 @@ const createPostCtrl = async (req: Request, res: Response) => {
     }
 
     verifyToken(req, res, async () => {
-      const { title, summary, content, tag } = req.body;
+      const postData = JSON.parse(req.body.postData);
+      const { title, summary, content, tag } = postData;
+
       const tagsArray = Array.isArray(tag) ? tag : [tag];
 
-      console.log("Request body:", req.body)
+      console.log("Request body:", req.body);
 
       const authorId = req.user?.id;
       if (!authorId) {
@@ -92,7 +173,8 @@ const createPostCtrl = async (req: Request, res: Response) => {
       res.json(postDoc);
     });
   } catch (error) {
-    handleHttp(res, "Error al crear el post");
+    console.error("Error en createPostCtrl:", error);
+    handleHttp(res, "Error al crear el post: " + error);
   }
 };
 
