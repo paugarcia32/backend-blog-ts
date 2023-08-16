@@ -1,16 +1,23 @@
 import { z } from "zod";
 
-const registerSchema = z.object({
-  username: z.string({
-    required_error: "Username is required",
+const createPostSchema = z.object({
+  title: z.string({
+    required_error: "Title is required",
   }),
-  password: z
-    .string({
-      required_error: "Password is required",
-    })
-    .min(6, {
-      message: "Password must be at least 6 characters",
-    }),
+  summary: z.string({
+    required_error: "Summary is required",
+  }),
+  content: z.string({
+    required_error: "Content is required",
+  }),
+  cover: z.string().optional(),
+  author: z.string({
+    required_error: "Author is required",
+  }).optional(),
+  tag: z.array(
+    z.string()
+    ),
+  file: z.unknown(),
 });
 
-export { registerSchema };
+export { createPostSchema };

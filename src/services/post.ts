@@ -10,7 +10,7 @@ import { IComment } from "../interfaces/comment.interface";
 
 import { IPostCreation } from "../interfaces/postCreation.interface";
 import { IPostUpdate } from "../interfaces/postUpdate.interface";
-const fs = require("fs");
+import fs from "fs";
 
 const getPostService = async (
   currentPage: number,
@@ -81,8 +81,6 @@ const createPostService = async ({
     tag: tagsArray,
     comments: [],
     file: file,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   });
 
   const postId = postDoc._id;
@@ -184,36 +182,6 @@ const getPostsCountService = async () => {
   }
 };
 
-// const deletePostService = async (postId: string) => {
-//   try {
-//     const post = await PostModel.findById(postId);
-
-//     if (!post) {
-//       throw new Error("El post no existe.");
-//     }
-
-//     const tagsArray: Types.ObjectId[] = post.tag
-//       .filter((tag) => tag instanceof Types.ObjectId)
-//       .map((tagId) => tagId as Types.ObjectId);
-
-//     for (const tagId of tagsArray) {
-//       const tagToUpdate = await Tag.findById(tagId);
-//       if (tagToUpdate) {
-//         tagToUpdate.posts = tagToUpdate.posts.filter(
-//           (post) => post.toString() !== postId
-//         );
-//         await tagToUpdate.save();
-//       }
-//     }
-
-//     await post.deleteOne();
-
-//     return post;
-//   } catch (error) {
-//     console.error(error);
-//     throw new Error("Error al eliminar el post.");
-//   }
-// };
 
 const deletePostService = async (postId: string) => {
   try {
@@ -242,7 +210,6 @@ const deletePostService = async (postId: string) => {
 
     await post.deleteOne();
 
-    // Eliminar la imagen del sistema de archivos
     if (imagePath) {
       deleteImageFromPath(imagePath);
     }
@@ -256,7 +223,6 @@ const deletePostService = async (postId: string) => {
 
 const deleteImageFromPath = (imagePath: string) => {
   try {
-    // Verificar si el archivo existe antes de intentar eliminarlo
     if (fs.existsSync(imagePath)) {
       // Eliminar el archivo
       fs.unlinkSync(imagePath);
