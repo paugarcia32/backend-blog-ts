@@ -1,0 +1,21 @@
+_id: req_e71728bb0c8940f09667c0152ea729e9
+type: Request
+parentId: fld_0b0f899fce7f411aab163cf368bcfde5
+modified: 1692136781822
+created: 1692136391335
+url: "{{ _.URL }}/posts/64c1aed1f616b705e7b50bbe"
+name: Get Posts With Tag
+description: ""
+method: GET
+body: {}
+parameters: []
+headers: []
+authentication: {}
+metaSortKey: -1692136391335
+isPrivate: false
+settingStoreCookies: true
+settingSendCookies: true
+settingDisableRenderRequestBody: false
+settingEncodeUrl: true
+settingRebuildPath: true
+settingFollowRedirects: global
