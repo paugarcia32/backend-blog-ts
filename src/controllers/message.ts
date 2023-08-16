@@ -7,8 +7,8 @@ import {
 
 const createMessageCtrl = async (req: Request, res: Response) => {
   try {
-    const { author, email, message } = req.body; // Agregado 'email' aquí
-    const newMessage = await createMessageService(author, email, message); // Agregado 'email' aquí
+    const { author, email, message } = req.body;
+    const newMessage = await createMessageService(author, email, message);
 
     res.status(201).json(newMessage);
   } catch (error) {

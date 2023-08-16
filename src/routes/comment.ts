@@ -9,9 +9,16 @@ import {
   getAllCommentsCtrl,
   removeLikeCtrl,
 } from "../controllers/comment";
+import { validateSchema } from "../utils/validator.handle";
+import { createCommentSchema } from "../schemas/comment";
+
 const router = Router();
 
-router.post("/post/:id/comment", createCommentCtrl);
+router.post(
+  "/post/:id/comment",
+  validateSchema(createCommentSchema),
+  createCommentCtrl
+);
 
 router.get("/post/:id/comments", getCommentCtrl);
 
