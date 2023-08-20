@@ -1,6 +1,8 @@
 import cors from "cors";
 
-const whiteList = [process.env.URL, process.env.ADMIN_URL];
+// const whiteList = [process.env.URL, process.env.ADMIN_URL];
+const whiteList = ["*"];
+
 
 const corsMiddleware = {
   credentials: true,
